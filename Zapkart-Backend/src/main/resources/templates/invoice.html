@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .invoice {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .title {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .invoice-details, .customer-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice-details p, .customer-details p {
+            margin: 4px 0;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice">
+    <!-- Header with logo and title -->
+    <div class="invoice-header">
+        <img th:src="@{http://localhost:8080/images/zapkartlogo.png}" alt="Zapkart Logo" class="logo"/>
+        <div class="title">Zapkart's Product Invoice</div>
+    </div>
+
+    <!-- Customer and Order Info -->
+    <div class="customer-details">
+        <p><strong>Customer Name:</strong> <span th:text="${invoice.customerName}">Name</span></p>
+        <p><strong>Customer ID:</strong> <span th:text="${invoice.customerId}">ID</span></p>
+    </div>
+    <div class="invoice-details">
+        <p><strong>Order ID:</strong> <span th:text="${invoice.razorpayOrderId}">OrderID</span></p>
+        <p><strong>Order Date:</strong> 
+            <span th:text="${#temporals.format(invoice.orderDate, 'yyyy-MM-dd HH:mm')}">Order Date</span>
+        </p>
+    </div>
+
+    <!-- Product Table -->
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price (₹)</th>
+                <th>Quantity</th>
+                <th>Total (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${invoice.items}">
+                <td th:text="${item.brand + ' ' + item.model}">Name</td>
+                <td th:text="${item.price}">Price</td>
+                <td th:text="${item.quantity}">Qty</td>
+                <td th:text="${item.total}">Total</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Total Amount -->
+    <div class="total">
+        Total Amount: ₹<span th:text="${invoice.totalAmount}">0.00</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for shopping with Zapkart!</p>
+        <p>For assistance, contact zapkartteam@gmail.com</p>
+    </div>
+</div>
+
+</body>
+</html>
