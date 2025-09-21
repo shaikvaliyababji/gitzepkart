@@ -11,20 +11,14 @@ import com.zapkart.ecommerce_backend.repository.PaymentRepository;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-	@Autowired
+    @Autowired
     private PaymentRepository paymentRepository;
 
-   
-
-<<<<<<< HEAD
     @Override
     public Payment createPayment(Payment payment) {
         return paymentRepository.save(payment);
     }
-=======
-   
->>>>>>> babji_admin
-    
+
     @Override
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();

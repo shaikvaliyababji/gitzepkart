@@ -5,15 +5,12 @@ import java.util.List;
 import com.zapkart.ecommerce_backend.model.Order;
 
 public interface OrderService {
-<<<<<<< HEAD
-    List<Order> getAllOrders();
- 
-   
-    List<Order> getOrdersBySellerId(Long sellerId);
-=======
+    Order createOrder(Order order);
 
-    List<Order> getAllOrders();
+    List<Order> getOrdersByCustomerId(Long customerId);
 
->>>>>>> babji_admin
+    List<Order> getOrdersGroupedByRazorpayOrderId(Long customerId);
+
+    List<Order> createOrders(List<Order> orders);
 
 }

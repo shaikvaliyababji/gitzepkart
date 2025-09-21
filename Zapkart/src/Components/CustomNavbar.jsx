@@ -170,6 +170,13 @@ const CustomNavbar = () => {
                       >
                         Manage My Profile
                       </li>
+                      <li
+                        className="p-2 hover-bg text-dark"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate('/my-orders')}
+                      >
+                        My Orders
+                      </li>
                       {role === "ADMIN" || role === "SELLER" ? (
                         <li
                           className="p-2 hover-bg text-dark"
@@ -183,6 +190,7 @@ const CustomNavbar = () => {
                   </div>
                 )}
               </div>
+
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant="outline-primary"

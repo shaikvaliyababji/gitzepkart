@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private EmailService emailService;
 
@@ -63,12 +63,12 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
+
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
-    
+
     public String generateResetToken(String email) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
@@ -87,15 +87,15 @@ public class UserServiceImpl implements UserService {
         mail.setSubject("🔐 Reset Your Password - Zapkart Support Team");
 
         String htmlContent = "<h3>Hello from <span style='color:#2563EB;'>Zapkart-Your Shopping expert</span> 👋</h3>"
-            + "<p>We received a request to reset your password.</p>"
-            + "<p><a href=\"" + resetLink + "\" "
-            + "style='padding:10px 20px; background-color:#2563EB; color:white; text-decoration:none; border-radius:5px;'>"
-            + "Click here to reset your password</a></p>"
-            + "<p>If you didn’t request this, please ignore this email.</p>"
-            + "<br><p>Regards,<br><b>Zapkart Support Team</b></p>";
+                + "<p>We received a request to reset your password.</p>"
+                + "<p><a href=\"" + resetLink + "\" "
+                + "style='padding:10px 20px; background-color:#2563EB; color:white; text-decoration:none; border-radius:5px;'>"
+                + "Click here to reset your password</a></p>"
+                + "<p>If you didn’t request this, please ignore this email.</p>"
+                + "<br><p>Regards,<br><b>Zapkart Support Team</b></p>";
 
         mail.setMsgBody(htmlContent);
-        emailService.sendHtmlMail(mail);  // ✅ Use HTML method
+        emailService.sendHtmlMail(mail); // ✅ Use HTML method
 
         return "Reset link sent to your email";
     }
@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
         return "Password updated successfully!";
     }
-    
+
     @Override
     public User updateUserProfile(String email, String newName) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -126,25 +126,20 @@ public class UserServiceImpl implements UserService {
         user.setName(newName);
         return userRepository.save(user);
     }
-    
+
     @Override
-	public long displaycustomercount() 
-	{
-		return userRepository.count();
-	}
+    public long displaycustomercount() {
+        return userRepository.count();
+    }
 
-	@Override
-	public long displaysellercount() 
-	{
-		return userRepository.count();
-	}
+    @Override
+    public long displaysellercount() {
+        return userRepository.count();
+    }
 
-	@Override
-	public long displayadmincount() 
-	{
-		return  userRepository.count();
-	}
+    @Override
+    public long displayadmincount() {
+        return userRepository.count();
+    }
 
-
-  
 }

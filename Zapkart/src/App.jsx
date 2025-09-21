@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SellerDashboard from './Components/Seller/SellerDashboard';
 import AdminDashboard from './Components/Admin/AdminDashboard';
+import CustomerDashboard from './Components/CustomerDashboard';
+import Razorpay from './Components/RazorpayPage.jsx';
 import './App.css';
 
 import Home from './Components/Home';
@@ -25,6 +27,7 @@ import Cart from './Components/Cart';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MyOrders from './Components/MyOrders';
 import ManageProfile from './Components/ManageProfile';
 import Forgotpassword from './Components/Forgotpassword';
 import Resetpassword from './Components/Resetpassword';
@@ -49,6 +52,13 @@ export default function App() {
 
         <Route path='/Cart' element={<Cart />}></Route>
 
+        <Route path='/manage-profile' element={<ManageProfile />}></Route>
+        <Route path='/forgot-password' element={<Forgotpassword />}></Route>
+        <Route path='/reset-password' element={<Resetpassword />}></Route>
+        <Route path='/checkout' element={<Razorpay />}></Route>
+        <Route path="/customer" element={<CustomerDashboard />} />
+        <Route path='/Cart' element={<Cart />}></Route>
+        <Route path='/my-orders' element={<MyOrders />}></Route>
         <Route path='/manage-profile' element={<ManageProfile />}></Route>
         <Route path='/forgot-password' element={<Forgotpassword />}></Route>
         <Route path='/reset-password' element={<Resetpassword />}></Route>

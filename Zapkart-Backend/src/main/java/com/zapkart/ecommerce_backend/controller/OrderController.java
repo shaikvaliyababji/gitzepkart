@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.zapkart.ecommerce_backend.model.EmailDetails;
 import com.zapkart.ecommerce_backend.model.Order;
 import com.zapkart.ecommerce_backend.model.User;
 import com.zapkart.ecommerce_backend.service.EmailService;
@@ -27,15 +25,40 @@ public class OrderController {
     @Autowired
     private EmailService emailService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
+    @PostMapping("/add")
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        Order savedOrder = orderService.createOrder(order);
+        // ✅ Email can go in the service layer or controller
+        if (savedOrder != null) {
+            User customer = savedOrder.getCustomer();
+            emailService.sendHtmlInvoice(customer, savedOrder); // ✅ sends the invoice
+        }
+        return ResponseEntity.ok(savedOrder);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<Order>> getOrdersByCustomerId(@PathVariable Long customerId) {
+        List<Order> orders = orderService.getOrdersByCustomerId(customerId);
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/{sellerId}")
-    public List<Order> getOrdersBySeller(@PathVariable Long sellerId) {
-        return orderService.getOrdersBySellerId(sellerId);
+    @GetMapping("/customer/grouped/{customerId}")
+    public ResponseEntity<List<Order>> getGroupedOrders(@PathVariable Long customerId) {
+        List<Order> orders = orderService.getOrdersGroupedByRazorpayOrderId(customerId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @PostMapping("/add-multiple")
+    public ResponseEntity<List<Order>> createGroupedOrders(@RequestBody List<Order> orders) {
+        List<Order> savedOrders = orderService.createOrders(orders);
+
+        if (!savedOrders.isEmpty()) {
+            User customer = savedOrders.get(0).getCustomer(); // assume all orders belong to same customer
+            String razorpayOrderId = savedOrders.get(0).getRazorpayOrderId(); // must be same across orders
+            emailService.sendGroupedInvoice(customer, savedOrders, razorpayOrderId);
+        }
+
+        return ResponseEntity.ok(savedOrders);
     }
 
 }
