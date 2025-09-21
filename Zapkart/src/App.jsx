@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import AdminDashboard from './Components/Admin/AdminDashboard';
-
+import SellerDashboard from './Components/Seller/SellerDashboard';
 import './App.css';
 
 import Home from './Components/Home';
@@ -20,6 +19,7 @@ import TvPage from './Components/ProductPages/TvPage';
 import FurniturePage from './Components/ProductPages/FurniturePage';
 import AcPage from './Components/ProductPages/AcPage';
 import KitchenPage from './Components/ProductPages/KitchenPage';
+import Cart from './Components/Cart';
 
 
 import { ToastContainer } from 'react-toastify';
@@ -27,6 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ManageProfile from './Components/ManageProfile';
 import Forgotpassword from './Components/Forgotpassword';
 import Resetpassword from './Components/Resetpassword';
+import SellerOrders from './Components/Seller/SellerOrders.jsx';
 
 
 export default function App() {
@@ -36,13 +37,13 @@ export default function App() {
       <Routes>
 
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-
-
-        <Route path='/manage-profile' element={<ManageProfile />}></Route>
-        <Route path='/forgot-password' element={<Forgotpassword />}></Route>
-        <Route path='/reset-password' element={<Resetpassword />}></Route>
-
+        <Route path="/seller" element={<SellerDashboard />} />
+        <Route path='/sellerorders' element={<SellerOrders/>}></Route>
+        <Route path='/Cart' element={<Cart />}></Route>
+        <Route path='/manage-profile' element={<ManageProfile/>}></Route>
+        <Route path='/forgot-password' element={<Forgotpassword/>}></Route>
+        <Route path='/reset-password' element={<Resetpassword/>}></Route>
+        <Route path='/checkout' element={<Razorpay/>}></Route>
 
         <Route path='/ProductGallery' element={<ProductGallery />}></Route>
         <Route path='/Productshome' element={<ProductsHome />}></Route>
@@ -57,6 +58,9 @@ export default function App() {
         <Route path='/ProductsHome/furniture' element={<FurniturePage />}></Route>
         <Route path='/ProductsHome/kitchen' element={<KitchenPage />}></Route>
         <Route path='/ProductsHome/ac' element={<AcPage />}></Route>
+
+
+
       </Routes>
     </>
   );
