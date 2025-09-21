@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+<<<<<<< HEAD
             
     
     <wb-module deploy-name="Zapkart-Backend">
@@ -16,4 +17,17 @@
     </wb-module>
         
 
+=======
+        
+    <wb-module deploy-name="Zapkart-Backend">
+                
+        <wb-resource deploy-path="/" source-path="/src/main/java"/>
+                
+        <wb-resource deploy-path="/" source-path="/src/main/resources"/>
+                
+        <wb-resource deploy-path="/" source-path="/target/generated-sources/annotations"/>
+            
+    </wb-module>
+    
+>>>>>>> babji_admin
 </project-modules>

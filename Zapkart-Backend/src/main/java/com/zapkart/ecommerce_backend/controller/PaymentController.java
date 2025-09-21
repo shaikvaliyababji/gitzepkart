@@ -10,18 +10,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@RestController	
+
+@RestController
 @RequestMapping("/api/payments")
 public class PaymentController {
 
     @Autowired
     private RazorpayService razorpayService;
-    
+
     @Autowired
     private PaymentService paymentService;
 
     @PostMapping("/create-order")
-    public String createOrder(@RequestParam int amount , @RequestParam String currency){
+    public String createOrder(@RequestParam int amount, @RequestParam String currency) {
 
         try {
             return razorpayService.createOrder(amount, currency, "recepient_100");
@@ -29,13 +30,13 @@ public class PaymentController {
             throw new RuntimeException(e);
         }
     }
-    
+
     @PostMapping("/add")
     public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
         Payment savedPayment = paymentService.createPayment(payment);
         return ResponseEntity.ok(savedPayment);
     }
-    
+
     @GetMapping("/all")
     public ResponseEntity<List<Payment>> getAllPayments() {
         List<Payment> payments = paymentService.getAllPayments();

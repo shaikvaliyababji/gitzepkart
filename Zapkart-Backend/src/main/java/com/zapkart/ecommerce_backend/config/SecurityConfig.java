@@ -33,19 +33,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors() // Enables CORS with configuration source
-            .and()
-            .csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/register", "/api/users/login", "/api/users/signin","/api/users/verify-otp","/api/users/forgot-password", "/api/users/reset-password","/invoice/view/razorpay/*","/invoice/download/razorpay/*","/images/**"
-                		+ "").permitAll()
-               
-                .requestMatchers("/api/invoice/create/**").authenticated()  // 👈 Add this line
-                .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .httpBasic();
+                .cors() // Enables CORS with configuration source
+                .and()
+                .csrf().disable()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/users/register", "/api/users/login", "/api/users/signin",
+                                "/api/users/verify-otp", "/api/users/forgot-password", "/api/users/reset-password",
+                                "/invoice/view/razorpay/*", "/invoice/download/razorpay/*", "/images/**"
+                                        + "")
+                        .permitAll()
+
+                        .requestMatchers("/api/invoice/create/**").authenticated() // 👈 Add this line
+                        .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic();
 
         return http.build();
     }
@@ -53,11 +55,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http
-            .getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder())
-            .and()
-            .build();
+                .getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
     }
 
     @Bean
@@ -75,7 +77,6 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

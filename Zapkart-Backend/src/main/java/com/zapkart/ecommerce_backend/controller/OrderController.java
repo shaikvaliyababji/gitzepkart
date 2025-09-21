@@ -23,25 +23,19 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
-    
+
     @Autowired
     private EmailService emailService;
-
-    
 
     @GetMapping("/all")
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
- 
-    
-    
+
     @GetMapping("/{sellerId}")
     public List<Order> getOrdersBySeller(@PathVariable Long sellerId) {
         return orderService.getOrdersBySellerId(sellerId);
     }
 
-
-
-}	
+}

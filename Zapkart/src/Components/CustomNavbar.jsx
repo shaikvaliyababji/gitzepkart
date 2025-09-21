@@ -67,19 +67,19 @@ const CustomNavbar = () => {
       >
         <Container>
           <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className="transition-all duration-300"
-                    >
-                      <Navbar.Brand href="#" className="flex items-center">
-                        <motion.img
-                          src={zapkarthorizontallogo}
-                          alt="ZapKart Logo"
-                          className="w-30 h-12 object-contain"
-                          whileHover={{ rotate: 5 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        />
-                      </Navbar.Brand>
-                    </motion.div>
+            whileHover={{ scale: 1.05 }}
+            className="transition-all duration-300"
+          >
+            <Navbar.Brand href="#" className="flex items-center">
+              <motion.img
+                src={zapkarthorizontallogo}
+                alt="ZapKart Logo"
+                className="w-30 h-12 object-contain"
+                whileHover={{ rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
+            </Navbar.Brand>
+          </motion.div>
 
           <Navbar.Toggle aria-controls="main-navbar" className="border-0">
             <FiMenu className="text-gray-600" />
@@ -170,7 +170,6 @@ const CustomNavbar = () => {
                       >
                         Manage My Profile
                       </li>
-                      
                       {role === "ADMIN" || role === "SELLER" ? (
                         <li
                           className="p-2 hover-bg text-dark"
@@ -184,7 +183,6 @@ const CustomNavbar = () => {
                   </div>
                 )}
               </div>
-              
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant="outline-primary"

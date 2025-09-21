@@ -23,32 +23,28 @@ import com.zapkart.ecommerce_backend.repository.UserRepository;
 import com.zapkart.ecommerce_backend.service.EmailService;
 import com.zapkart.ecommerce_backend.service.JWTManager;
 
-@CrossOrigin(
-	    origins = "http://localhost:5173"
-	)
-@RestController 
+@CrossOrigin(origins = "http://localhost:5173")
+@RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private JWTManager jwtManager;
-    
+
     @Autowired
     private EmailService emailService;
-    
 
     @Autowired
     private UserRepository userRepository;
-    
-    public static String uploadDirectory=System.getProperty("user.dir")+"/src/main/resources/static/images";
-    
 
+    public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images";
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@ModelAttribute User user, @RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<User> register(@ModelAttribute User user, @RequestParam("image") MultipartFile file)
+            throws IOException {
         String OriginalFileName = file.getOriginalFilename();
         Path fileNameandPath = Paths.get(uploadDirectory, OriginalFileName);
         Files.write(fileNameandPath, file.getBytes());
@@ -57,24 +53,23 @@ public class UserController {
         // generate OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
         user.setOtp(otp);
-        user.setVerified(false);  // newly registered user must verify
+        user.setVerified(false); // newly registered user must verify
 
         User savedUser = userService.registerUser(user);
 
         // send OTP to email
         emailService.sendEmail(
-            savedUser.getEmail(),
-            "ZapKart Email Verification",
-            "Welcome to ZapKart! Your OTP is: " + savedUser.getOtp()
-        );
+                savedUser.getEmail(),
+                "ZapKart Email Verification",
+                "Welcome to ZapKart! Your OTP is: " + savedUser.getOtp());
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
-    
+
     @PostMapping("/resend-otp")
     public ResponseEntity<String> resendOtp(@RequestParam String email) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
         if (user.isVerified()) {
             return ResponseEntity.badRequest().body("User is already verified.");
@@ -87,19 +82,17 @@ public class UserController {
 
         // resend OTP email
         emailService.sendEmail(
-            user.getEmail(),
-            "ZapKart Email Verification - Resend OTP",
-            "Your new OTP is: " + newOtp
-        );
+                user.getEmail(),
+                "ZapKart Email Verification - Resend OTP",
+                "Your new OTP is: " + newOtp);
 
         return ResponseEntity.ok("Verification email resent successfully.");
     }
 
-    
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
         if (user.isVerified()) {
             return ResponseEntity.ok("User already verified!");
@@ -115,22 +108,21 @@ public class UserController {
         }
     }
 
-
-
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
-    	return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
+
     @PostMapping("/signin")
     public ResponseEntity<String> login(@RequestBody User u) {
         return userService.ValidateCredentials(u.getEmail(), u.getPassword());
     }
-    
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
         if (updatedUser.getName() != null) {
             existingUser.setName(updatedUser.getName());
@@ -156,8 +148,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    
- // Delete product - Accessible to ADMIN only
+    // Delete product - Accessible to ADMIN only
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
@@ -169,7 +160,7 @@ public class UserController {
     public ResponseEntity<String> securedEndpoint() {
         return ResponseEntity.ok("✅ You have accessed a secured endpoint!");
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<User> getCurrentUser(HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
@@ -177,8 +168,6 @@ public class UserController {
         User user = userRepository.findByEmail(email).orElse(null);
         return ResponseEntity.ok(user);
     }
- 
-
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/orders")
@@ -186,36 +175,37 @@ public class UserController {
         // You can later fetch real orders from DB
         return ResponseEntity.ok("Here are your orders, dear customer!");
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/dashboard")
     public ResponseEntity<String> adminDashboard() {
         return ResponseEntity.ok("Admin content");
     }
+
     @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/seller/products")
     public ResponseEntity<String> sellerView() {
         return ResponseEntity.ok("Seller content");
     }
-    
+
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-      String result = userService.generateResetToken(email);
-      if (result.equals("Buyer not found!")) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
-      }
-      return ResponseEntity.ok(result);
+        String result = userService.generateResetToken(email);
+        if (result.equals("Buyer not found!")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-      String result = userService.resetPassword(token, newPassword);
-      if (result.equals("Invalid token!")) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-      }
-      return ResponseEntity.ok(result);
+        String result = userService.resetPassword(token, newPassword);
+        if (result.equals("Invalid token!")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 
-    
     @PutMapping("/updateprofile")
     public ResponseEntity<?> updateProfile(@RequestBody User updatedData, HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
@@ -227,28 +217,23 @@ public class UserController {
         }
         return ResponseEntity.ok(updatedUser);
     }
-    
+
     @GetMapping("/customercount")
-    public ResponseEntity<Long> getCustomerCount()
-    {
+    public ResponseEntity<Long> getCustomerCount() {
         long count = userService.displaycustomercount();
         return ResponseEntity.ok(count);
     }
 
     @GetMapping("/sellercount")
-    public ResponseEntity<Long> getSellerCount()
-    {
+    public ResponseEntity<Long> getSellerCount() {
         long count = userService.displaysellercount();
         return ResponseEntity.ok(count);
     }
 
     @GetMapping("/admincount")
-    public ResponseEntity<Long> getAdminCount()
-    {
+    public ResponseEntity<Long> getAdminCount() {
         long count = userService.displayadmincount();
         return ResponseEntity.ok(count);
     }
 
-
 }
-

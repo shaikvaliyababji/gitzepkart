@@ -36,13 +36,20 @@ public class OrderServiceImpl implements OrderService {
    
 
     
+<<<<<<< HEAD
     
  
     
+=======
+
+    
+   
+>>>>>>> babji_admin
     @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+<<<<<<< HEAD
  
     
     
@@ -51,4 +58,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findOrdersBySellerId(sellerId);
     }
 
+=======
+   
+>>>>>>> babji_admin
 }

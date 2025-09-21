@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SellerDashboard from './Components/Seller/SellerDashboard';
+import AdminDashboard from './Components/Admin/AdminDashboard';
 import './App.css';
 
 import Home from './Components/Home';
@@ -38,12 +39,20 @@ export default function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="/seller" element={<SellerDashboard />} />
-        <Route path='/sellerorders' element={<SellerOrders/>}></Route>
+        <Route path='/sellerorders' element={<SellerOrders />}></Route>
         <Route path='/Cart' element={<Cart />}></Route>
-        <Route path='/manage-profile' element={<ManageProfile/>}></Route>
-        <Route path='/forgot-password' element={<Forgotpassword/>}></Route>
-        <Route path='/reset-password' element={<Resetpassword/>}></Route>
-        <Route path='/checkout' element={<Razorpay/>}></Route>
+        <Route path='/manage-profile' element={<ManageProfile />}></Route>
+        <Route path='/forgot-password' element={<Forgotpassword />}></Route>
+        <Route path='/reset-password' element={<Resetpassword />}></Route>
+        <Route path='/checkout' element={<Razorpay />}></Route>
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route path='/Cart' element={<Cart />}></Route>
+
+        <Route path='/manage-profile' element={<ManageProfile />}></Route>
+        <Route path='/forgot-password' element={<Forgotpassword />}></Route>
+        <Route path='/reset-password' element={<Resetpassword />}></Route>
+        <Route path='/checkout' element={<Razorpay />}></Route>
 
         <Route path='/ProductGallery' element={<ProductGallery />}></Route>
         <Route path='/Productshome' element={<ProductsHome />}></Route>

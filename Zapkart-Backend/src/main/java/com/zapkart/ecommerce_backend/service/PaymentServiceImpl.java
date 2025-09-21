@@ -16,10 +16,14 @@ public class PaymentServiceImpl implements PaymentService {
 
    
 
+<<<<<<< HEAD
     @Override
     public Payment createPayment(Payment payment) {
         return paymentRepository.save(payment);
     }
+=======
+   
+>>>>>>> babji_admin
     
     @Override
     public List<Payment> getAllPayments() {
