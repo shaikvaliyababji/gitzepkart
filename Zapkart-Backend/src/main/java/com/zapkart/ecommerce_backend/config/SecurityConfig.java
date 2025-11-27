@@ -17,9 +17,75 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+// @Configuration
+// @EnableWebSecurity
+// @EnableMethodSecurity // Enables @PreAuthorize, etc.
+// public class SecurityConfig {
+
+//     private final JWTAuthFilter jwtAuthFilter;
+//     private final CustomUserDetailsService userDetailsService;
+
+//     public SecurityConfig(JWTAuthFilter jwtAuthFilter, CustomUserDetailsService userDetailsService) {
+//         this.jwtAuthFilter = jwtAuthFilter;
+//         this.userDetailsService = userDetailsService;
+//     }
+
+//     @Bean
+//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//         http
+//                 .cors() // Enables CORS with configuration source
+//                 .and()
+//                 .csrf().disable()
+//                 .authorizeHttpRequests(auth -> auth
+//                         .requestMatchers("/api/users/register", "/api/users/login", "/api/users/signin",
+//                                 "/api/users/verify-otp", "/api/users/forgot-password", "/api/users/reset-password",
+//                                 "/invoice/view/razorpay/*", "/invoice/download/razorpay/*", "/images/**"
+//                                         + "")
+//                         .permitAll()
+
+//                         .requestMatchers("/api/invoice/create/**").authenticated() // 👈 Add this line
+//                         .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
+//                         .anyRequest().authenticated())
+//                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+//                 .httpBasic();
+
+//         return http.build();
+//     }
+
+//     @Bean
+//     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//         return http
+//                 .getSharedObject(AuthenticationManagerBuilder.class)
+//                 .userDetailsService(userDetailsService)
+//                 .passwordEncoder(passwordEncoder())
+//                 .and()
+//                 .build();
+//     }
+
+//     @Bean
+//     public PasswordEncoder passwordEncoder() {
+//         return new BCryptPasswordEncoder();
+//     }
+
+//     @Bean
+//     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+//         CorsConfiguration configuration = new CorsConfiguration();
+//         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // React frontend origin
+//         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+//         configuration.setAllowCredentials(true); // Allow cookies/auth headers
+//         configuration.addAllowedOrigin("http://localhost:3000");
+//         configuration.addAllowedMethod("*");
+//         configuration.addAllowedHeader("*");
+
+//         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//         source.registerCorsConfiguration("/**", configuration);
+//         return source;
+//     }
+// }
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enables @PreAuthorize, etc.
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JWTAuthFilter jwtAuthFilter;
@@ -33,17 +99,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors() // Enables CORS with configuration source
-                .and()
-                .csrf().disable()
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login", "/api/users/signin",
-                                "/api/users/verify-otp", "/api/users/forgot-password", "/api/users/reset-password",
-                                "/invoice/view/razorpay/*", "/invoice/download/razorpay/*", "/images/**"
-                                        + "")
+                        .requestMatchers(
+                                "/api/users/register",
+                                "/api/users/login",
+                                "/api/users/signin",
+                                "/api/users/verify-otp",
+                                "/api/users/resend-otp",
+                                "/api/users/forgot-password",
+                                "/api/users/reset-password",
+                                "/invoice/view/razorpay/**",
+                                "/invoice/download/razorpay/**",
+                                "/images/**")
                         .permitAll()
-
-                        .requestMatchers("/api/invoice/create/**").authenticated() // 👈 Add this line
                         .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -53,9 +123,21 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http
-                .getSharedObject(AuthenticationManagerBuilder.class)
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder())
                 .and()
@@ -65,21 +147,5 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // React frontend origin
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true); // Allow cookies/auth headers
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }
